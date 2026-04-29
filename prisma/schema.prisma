@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model College {
+  id             String   @id @default(cuid())
+  name           String
+  location       String
+  rating         Float
+  averageFees    Int
+  placement      Float    // Placement percentage (0-100)
+  averagePackage Float    @default(0) // Average salary package in LPA
+  description    String
+  imageUrl       String?
+  cutoffExam     String?  // e.g. "JEE Main"
+  cutoffRank     Int?     // e.g. 15000
+
+  courses     Course[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Course {
+  id        String   @id @default(cuid())
+  name      String
+  duration  String
+  fees      Int
+  collegeId String
+  college   College  @relation(fields: [collegeId], references: [id])
+}
