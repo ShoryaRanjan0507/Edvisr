@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
@@ -6,8 +7,35 @@ async function main() {
   console.log('Seeding database...')
 
   // Clear existing data
+  await prisma.bookmark.deleteMany()
+  await prisma.article.deleteMany()
+  await prisma.question.deleteMany()
+  await prisma.user.deleteMany()
   await prisma.course.deleteMany()
   await prisma.college.deleteMany()
+
+  // Create Users
+  const passwordHash = await bcrypt.hash('password123', 10)
+  
+  const user1 = await prisma.user.create({
+    data: {
+      username: 'rohit',
+      email: 'rohit@example.com',
+      passwordHash,
+      avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop',
+      bio: 'Aspiring engineering student exploring top colleges.',
+    }
+  })
+
+  const user2 = await prisma.user.create({
+    data: {
+      username: 'sneha',
+      email: 'sneha@example.com',
+      passwordHash,
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
+      bio: 'Senior counselor and education enthusiast.',
+    }
+  })
 
   // Create Colleges
   const c1 = await prisma.college.create({
@@ -108,6 +136,44 @@ async function main() {
           { name: 'B.Sc (Hons) Physics', duration: '3 Years', fees: 22000 },
         ]
       }
+    }
+  })
+
+  // Create Dummy Questions
+  await prisma.question.create({
+    data: {
+      title: 'Is IIT Delhi CS worth giving up an Ivy League admission?',
+      content: 'I have been admitted to Cornell for CS but also secured a top 100 rank in JEE Advanced. Which one provides better long-term ROI and research opportunities?',
+      authorId: user1.id,
+      upvotes: 42,
+    }
+  })
+
+  await prisma.question.create({
+    data: {
+      title: 'How is the hostel life at BITS Pilani?',
+      content: 'I heard BITS has a zero-attendance policy. Does that make the hostel life very different from NITs?',
+      authorId: user1.id,
+      upvotes: 15,
+    }
+  })
+
+  // Create Dummy Articles
+  await prisma.article.create({
+    data: {
+      title: 'The Ultimate Guide to Surviving Your First Year of Engineering',
+      content: 'Engineering can be daunting. Here are 5 tips to make sure you stay on top of your coursework while enjoying college life: 1. Manage your time. 2. Join clubs. 3. Do not ignore sleep. 4. Network with seniors. 5. Keep learning new skills.',
+      authorId: user2.id,
+      readTime: 4,
+    }
+  })
+
+  await prisma.article.create({
+    data: {
+      title: 'Why Placements Aren\'t Everything',
+      content: 'Many students fixate solely on the "Highest Package" advertised by colleges. In this article, I discuss why curriculum, peer group, and alumni networks matter much more for your 10-year trajectory.',
+      authorId: user2.id,
+      readTime: 6,
     }
   })
 

@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -21,6 +21,7 @@ model College {
   cutoffRank     Int?     // e.g. 15000
 
   courses     Course[]
+  bookmarks   Bookmark[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -32,4 +33,57 @@ model Course {
   fees      Int
   collegeId String
   college   College  @relation(fields: [collegeId], references: [id])
+}
+
+model User {
+  id           String     @id @default(cuid())
+  username     String     @unique
+  email        String     @unique
+  phone        String?
+  passwordHash String
+  avatarUrl    String?
+  bio          String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  questions    Question[]
+  articles     Article[]
+  bookmarks    Bookmark[]
+}
+
+model Question {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  upvotes   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Article {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  readTime  Int      @default(5)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bookmarks Bookmark[]
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  articleId String?
+  article   Article? @relation(fields: [articleId], references: [id])
+  collegeId String?
+  college   College? @relation(fields: [collegeId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, articleId])
+  @@unique([userId, collegeId])
 }

@@ -23,10 +23,12 @@ export default function CompareView({
   const [isDropdownOpen, setIsDropdownOpen] = useState<{ [key: number]: boolean }>({ 0: false, 1: false, 2: false });
 
   // Sync state with props when navigation occurs
-  useEffect(() => {
-    setSelectedColleges(initialSelected);
-    setIsPending(false);
-  }, [initialSelected]);
+  // Instead of an effect, we can derive state or simply let React re-mount on key change.
+  // But since we want to keep it simple, we just use the initialSelected directly if it changes.
+  if (initialSelected !== selectedColleges && initialSelected.length !== selectedColleges.length) {
+     setSelectedColleges(initialSelected);
+     setIsPending(false);
+  }
 
   const updateURL = (colleges: CollegeWithCourses[]) => {
     const params = new URLSearchParams();
