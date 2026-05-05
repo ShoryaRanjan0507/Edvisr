@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { College } from "@prisma/client";
 import { useState } from "react";
+import BookmarkCollegeButton from "./BookmarkCollegeButton";
 
 export default function CollegeCard({ college }: { college: College }) {
   const [imgError, setImgError] = useState(false);
@@ -22,6 +23,9 @@ export default function CollegeCard({ college }: { college: College }) {
         />
         <div className="absolute top-6 left-6 bg-white/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black text-gray-900 flex items-center gap-1.5 border border-white/20 uppercase tracking-widest">
           {college.rating.toFixed(1)} / 5.0
+        </div>
+        <div className="absolute top-4 right-4 z-10">
+          <BookmarkCollegeButton collegeId={college.id} />
         </div>
       </div>
       

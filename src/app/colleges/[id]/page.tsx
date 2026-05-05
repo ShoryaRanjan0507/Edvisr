@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import BookmarkCollegeButton from "@/components/BookmarkCollegeButton";
 
 export default async function CollegeDetailPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -31,12 +32,16 @@ export default async function CollegeDetailPage(props: { params: Promise<{ id: s
         )}
         
         <div className="relative max-w-7xl mx-auto px-4 h-full flex flex-col justify-end pb-12">
-          <Link href="/" className="absolute top-8 left-4 inline-flex items-center text-xs font-black uppercase tracking-widest text-white/70 hover:text-white transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
+          <Link href="/" className="absolute top-32 left-4 md:left-8 inline-flex items-center text-xs font-black uppercase tracking-widest text-white/70 hover:text-white transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 z-20">
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Explorer
           </Link>
+          
+          <div className="absolute top-32 right-4 md:right-8 z-20">
+            <BookmarkCollegeButton collegeId={college.id} />
+          </div>
 
           <div className="flex flex-col md:flex-row gap-8 items-end">
             <div className="flex-1">

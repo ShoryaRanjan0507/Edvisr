@@ -13,7 +13,7 @@ export async function GET(request: Request) {
       where: { userId },
       include: {
         article: true,
-        // college: true - if we want to fetch colleges too
+        college: true
       },
       orderBy: { createdAt: 'desc' }
     })
